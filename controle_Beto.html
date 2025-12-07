@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Controle do Tio Beto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #020617;
+      --bg-soft: #020617;
+      --primary: #38bdf8;
+      --primary-soft: rgba(56, 189, 248, 0.15);
+      --danger: #f97373;
+      --danger-soft: rgba(248, 113, 113, 0.15);
+      --success: #22c55e;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --radius: 14px;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px 40px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    header {
+      background: radial-gradient(circle at 0 0, #38bdf8 0, #020617 40%);
+      border-radius: 24px;
+      padding: 18px 18px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(18px);
+    }
+
+    header .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 30% 0, #e0f2fe, #38bdf8 40%, #0f172a 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0b1120;
+      font-weight: 800;
+      font-size: 1.4rem;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.8);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+
+    .tag {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e5e7eb;
+      background: rgba(15, 23, 42, 0.55);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    main {
+      margin-top: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      header {
+        position: static;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #0b1120, #020617 55%);
+      border-radius: 22px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .card-header span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-card {
+      border-radius: 16px;
+      padding: 10px 10px 9px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), #020617);
+      display: grid;
+      gap: 2px;
+    }
+
+    .summary-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .summary-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .summary-chip {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .summary-value.positive {
+      color: var(--success);
+    }
+
+    .summary-value.negative {
+      color: var(--danger);
+    }
+
+    #alerta-saldo {
+      margin-top: 10px;
+      border-radius: 16px;
+      padding: 9px 10px;
+      background: var(--danger-soft);
+      border: 1px solid rgba(248, 113, 113, 0.5);
+      color: #fecaca;
+      font-size: 0.8rem;
+      display: none;
+    }
+
+    #alerta-saldo strong {
+      color: #fee2e2;
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tipo-toggle {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+    }
+
+    .tipo-toggle button {
+      flex: 1;
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 7px 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tipo-toggle button.active {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0b1120;
+      font-weight: 600;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.8),
+        0 10px 25px rgba(56, 189, 248, 0.4);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 11px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text);
+      padding: 7px 9px;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 150px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: #38bdf8;
+    }
+
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 14px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      color: #0b1120;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 10px 24px rgba(56, 189, 248, 0.6);
+      margin-top: 4px;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.6);
+    }
+
+    .btn-secondary {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 7px 12px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.85);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    th,
+    td {
+      padding: 6px 4px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.85);
+      vertical-align: top;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-top: 0;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill-despesa {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.4);
+    }
+
+    .pill-deposito {
+      background: rgba(45, 212, 191, 0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(45, 212, 191, 0.4);
+    }
+
+    .text-muted {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .align-right {
+      text-align: right;
+    }
+
+    .tiny-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+
+    .badge-diff-positive {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .badge-diff-negative {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    #whatsapp-box {
+      margin-top: 10px;
+      display: none;
+    }
+
+    #whatsapp-text {
+      font-family: inherit;
+    }
+
+    .helper {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="title-row">
+        <div class="brand">
+          <div class="brand-icon">B</div>
+          <div>
+            <h1>Controle do Tio Beto</h1>
+            <p>Despesas rateadas + depósitos dos colaboradores</p>
+          </div>
+        </div>
+        <span class="tag">
+          <span>FAMÍLIA BETO</span>
+        </span>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="card-inner">
+          <div class="card-header">
+            <h2>Resumo financeiro</h2>
+            <span>Visão geral do caixa</span>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-label">Despesas totais</div>
+              <div class="summary-value" id="res-despesas">R$ 0,00</div>
+              <div class="summary-chip" id="res-despesas-itens">0 lançamentos</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Depósitos totais</div>
+              <div class="summary-value positive" id="res-depositos">R$ 0,00</div>
+              <div class="summary-chip" id="res-depositos-itens">0 lançamentos</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Saldo do caixa</div>
+              <div class="summary-value" id="res-saldo">R$ 0,00</div>
+              <div class="summary-chip" id="res-cota">
+                Cota estimada por pessoa: R$ 0,00
+              </div>
+            </div>
+          </div>
+
+          <div id="alerta-saldo">
+            <strong>⚠ Saldo negativo!</strong> O caixa está em <span id="alerta-saldo-valor"></span>.
+            Avaliar solicitar novos depósitos ao grupo.
+          </div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <h2>Novo lançamento</h2>
+              <span>Despesas ou depósitos</span>
+            </div>
+
+            <form id="form-lancamento">
+              <div class="tipo-toggle">
+                <button type="button" class="active" id="btn-tipo-despesa">
+                  Despesa
+                </button>
+                <button type="button" id="btn-tipo-deposito">Depósito</button>
+              </div>
+              <input type="hidden" id="tipo" value="despesa" />
+
+              <div class="field-row">
+                <div>
+                  <label for="data">Data</label>
+                  <input type="date" id="data" required />
+                </div>
+                <div id="campo-categoria">
+                  <label for="categoria">Categoria</label>
+                  <select id="categoria">
+                    <option value="Aluguel">Aluguel</option>
+                    <option value="Remédios">Remédios</option>
+                    <option value="Consultas">Consultas</option>
+                    <option value="Exames">Exames</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Outros">Outros</option>
+                  </select>
+                </div>
+                <div id="campo-colaborador" style="display: none;">
+                  <label for="colaborador">Colaborador (depósito)</label>
+                  <select id="colaborador"></select>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div>
+                  <label for="valor">Valor (R$)</label>
+                  <input
+                    type="number"
+                    id="valor"
+                    min="0"
+                    step="0.01"
+                    inputmode="decimal"
+                    required
+                    placeholder="0,00"
+                  />
+                </div>
+
+                <div id="campo-pago-por">
+                  <label for="pagoPor">Pago por</label>
+                  <select id="pagoPor"></select>
+                  <div class="checkbox-row">
+                    <input type="checkbox" id="ressarcir" />
+                    <label for="ressarcir">Marcar para ressarcimento</label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label for="descricao">Descrição / observação</label>
+                <textarea
+                  id="descricao"
+                  placeholder="Ex.: Consulta cardiologista Dr. João, remédios de farmácia, etc."
+                ></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                <span>Adicionar lançamento</span>
+              </button>
+
+              <div class="helper">
+                • Despesas são rateadas igualmente entre todos e debitadas do saldo global.<br />
+                • Se o saldo ficar negativo, um alerta aparecerá para solicitar novos depósitos.<br />
+                • Se o <b>pagador não for o Henrique</b>, o sistema marca automaticamente a despesa como <b>para ressarcimento</b>.
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <h2>Rateio entre colaboradores</h2>
+              <span>Comparação cota x depósitos</span>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Colaborador</th>
+                  <th class="align-right">Depósitos</th>
+                  <th class="align-right">Cota</th>
+                  <th class="align-right">Diferença</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-rateio"></tbody>
+            </table>
+
+            <div class="helper" style="margin-top: 8px;">
+              • Cota = Despesas totais ÷ número de colaboradores.<br />
+              • Diferença negativa indica quanto falta para o colaborador alcançar a cota.
+            </div>
+
+            <div style="margin-top: 10px;">
+              <button type="button" class="btn-secondary" id="btn-whatsapp">
+                Gerar texto para WhatsApp
+              </button>
+            </div>
+
+            <div id="whatsapp-box">
+              <label for="whatsapp-text" style="margin-top: 8px; display: block;">
+                Texto gerado (toque, selecione tudo e copie):
+              </label>
+              <textarea id="whatsapp-text"></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="card-inner">
+          <div class="card-header">
+            <h2>Lançamentos detalhados</h2>
+            <span>Histórico de despesas e depósitos</span>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Detalhes</th>
+                <th class="align-right">Valor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabela-lancamentos"></tbody>
+          </table>
+
+          <div class="helper" style="margin-top: 8px;">
+            • Use o “x” para remover lançamentos feitos por engano.<br />
+            • Os dados ficam salvos neste dispositivo (navegador) automaticamente.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const colaboradores = ["Kamila", "Frederico", "Laerte", "Henrique", "Carlos"];
+    let lancamentos = [];
+
+    const STORAGE_KEY = "controleBetoV1";
+
+    function formatCurrency(value) {
+      const num = Number(value) || 0;
+      return num.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+    }
+
+    function todayISO() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function initSelects() {
+      const pagoPor = document.getElementById("pagoPor");
+      const colaboradorSelect = document.getElementById("colaborador");
+
+      colaboradores.forEach((nome) => {
+        const opt1 = document.createElement("option");
+        opt1.value = nome;
+        opt1.textContent = nome;
+        pagoPor.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = nome;
+        opt2.textContent = nome;
+        colaboradorSelect.appendChild(opt2);
+      });
+
+      const optOutro = document.createElement("option");
+      optOutro.value = "Outro";
+      optOutro.textContent = "Outro";
+      pagoPor.appendChild(optOutro);
+
+      colaboradorSelect.selectedIndex = 0;
+      pagoPor.selectedIndex = 0;
+    }
+
+    function salvarDados() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lancamentos));
+      } catch (e) {
+        console.warn("Não foi possível salvar no localStorage:", e);
+      }
+    }
+
+    function carregarDados() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            lancamentos = parsed;
+          }
+        }
+      } catch (e) {
+        console.warn("Erro ao carregar dados:", e);
+      }
+    }
+
+    function calcularResumo() {
+      let totalDespesas = 0;
+      let totalDepositos = 0;
+      let qtdDespesas = 0;
+      let qtdDepositos = 0;
+
+      const depositosPorPessoa = {};
+      colaboradores.forEach((c) => (depositosPorPessoa[c] = 0));
+
+      lancamentos.forEach((l) => {
+        const valor = Number(l.valor) || 0;
+        if (l.tipo === "despesa") {
+          totalDespesas += valor;
+          qtdDespesas++;
+        } else if (l.tipo === "deposito") {
+          totalDepositos += valor;
+          qtdDepositos++;
+          if (l.colaborador && depositosPorPessoa.hasOwnProperty(l.colaborador)) {
+            depositosPorPessoa[l.colaborador] += valor;
+          }
+        }
+      });
+
+      const saldo = totalDepositos - totalDespesas;
+      const cota =
+        colaboradores.length > 0 ? totalDespesas / colaboradores.length : 0;
+
+      return {
+        totalDespesas,
+        totalDepositos,
+        saldo,
+        cota,
+        qtdDespesas,
+        qtdDepositos,
+        depositosPorPessoa,
+      };
+    }
+
+    function atualizarResumoUI() {
+      const {
+        totalDespesas,
+        totalDepositos,
+        saldo,
+        cota,
+        qtdDespesas,
+        qtdDepositos,
+      } = calcularResumo();
+
+      const resDespesas = document.getElementById("res-despesas");
+      const resDepositos = document.getElementById("res-depositos");
+      const resSaldo = document.getElementById("res-saldo");
+      const resCota = document.getElementById("res-cota");
+      const resDespesasItens = document.getElementById("res-despesas-itens");
+      const resDepositosItens = document.getElementById("res-depositos-itens");
+      const alerta = document.getElementById("alerta-saldo");
+      const alertaValor = document.getElementById("alerta-saldo-valor");
+
+      resDespesas.textContent = formatCurrency(totalDespesas);
+      resDepositos.textContent = formatCurrency(totalDepositos);
+      resDespesasItens.textContent = `${qtdDespesas} lançamento${
+        qtdDespesas === 1 ? "" : "s"
+      }`;
+      resDepositosItens.textContent = `${qtdDepositos} lançamento${
+        qtdDepositos === 1 ? "" : "s"
+      }`;
+      resCota.textContent = `Cota estimada por pessoa: ${formatCurrency(cota)}`;
+
+      resSaldo.textContent = formatCurrency(saldo);
+      resSaldo.classList.remove("positive", "negative");
+      if (saldo > 0) {
+        resSaldo.classList.add("positive");
+      } else if (saldo < 0) {
+        resSaldo.classList.add("negative");
+      }
+
+      if (saldo < 0) {
+        alerta.style.display = "block";
+        alertaValor.textContent = formatCurrency(saldo);
+      } else {
+        alerta.style.display = "none";
+      }
+    }
+
+    function atualizarRateioUI() {
+      const tbody = document.getElementById("tabela-rateio");
+      tbody.innerHTML = "";
+
+      const { cota, depositosPorPessoa } = calcularResumo();
+
+      colaboradores.forEach((nome) => {
+        const tr = document.createElement("tr");
+
+        const tdNome = document.createElement("td");
+        tdNome.textContent = nome;
+
+        const tdDepositos = document.createElement("td");
+        tdDepositos.className = "align-right";
+        tdDepositos.textContent = formatCurrency(depositosPorPessoa[nome] || 0);
+
+        const tdCota = document.createElement("td");
+        tdCota.className = "align-right";
+        tdCota.textContent = formatCurrency(cota);
+
+        const tdDiff = document.createElement("td");
+        tdDiff.className = "align-right";
+        const diff = (depositosPorPessoa[nome] || 0) - cota;
+        const spanDiff = document.createElement("span");
+        spanDiff.textContent = formatCurrency(diff);
+        if (diff < 0) {
+          spanDiff.classList.add("badge-diff-negative");
+        } else if (diff > 0) {
+          spanDiff.classList.add("badge-diff-positive");
+        }
+        tdDiff.appendChild(spanDiff);
+
+        tr.appendChild(tdNome);
+        tr.appendChild(tdDepositos);
+        tr.appendChild(tdCota);
+        tr.appendChild(tdDiff);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function atualizarLancamentosUI() {
+      const tbody = document.getElementById("tabela-lancamentos");
+      tbody.innerHTML = "";
+
+      const sorted = [...lancamentos].sort((a, b) => {
+        if (a.data === b.data) {
+          return (a.id || 0) - (b.id || 0);
+        }
+        return a.data < b.data ? -1 : 1;
+      });
+
+      if (sorted.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.className = "text-muted";
+        td.textContent = "Nenhum lançamento cadastrado até o momento.";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+
+      sorted.forEach((l) => {
+        const tr = document.createElement("tr");
+
+        const tdData = document.createElement("td");
+        tdData.textContent = l.data || "";
+
+        const tdTipo = document.createElement("td");
+        const pill = document.createElement("span");
+        pill.classList.add(
+          "pill",
+          l.tipo === "despesa" ? "pill-despesa" : "pill-deposito"
+        );
+        pill.textContent = l.tipo === "despesa" ? "Despesa" : "Depósito";
+        tdTipo.appendChild(pill);
+
+        const tdDetalhes = document.createElement("td");
+        const linhas = [];
+
+        if (l.tipo === "despesa") {
+          if (l.categoria) {
+            linhas.push(`Categoria: ${l.categoria}`);
+          }
+          if (l.pagoPor) {
+            let txt = `Pago por: ${l.pagoPor}`;
+            if (l.ressarcir) txt += " (ressarcir)";
+            linhas.push(txt);
+          }
+        } else if (l.tipo === "deposito") {
+          if (l.colaborador) {
+            linhas.push(`Depósito de: ${l.colaborador}`);
+          }
+        }
+        if (l.descricao) linhas.push(l.descricao);
+
+        tdDetalhes.innerHTML = linhas
+          .map((t) => `<div class="text-muted">${t}</div>`)
+          .join("");
+
+        const tdValor = document.createElement("td");
+        tdValor.className = "align-right";
+        tdValor.textContent = formatCurrency(l.valor);
+
+        const tdAcao = document.createElement("td");
+        tdAcao.className = "align-right";
+        const btnDel = document.createElement("button");
+        btnDel.type = "button";
+        btnDel.className = "tiny-btn";
+        btnDel.textContent = "x";
+        btnDel.title = "Remover lançamento";
+        btnDel.addEventListener("click", () => removerLancamento(l.id));
+        tdAcao.appendChild(btnDel);
+
+        tr.appendChild(tdData);
+        tr.appendChild(tdTipo);
+        tr.appendChild(tdDetalhes);
+        tr.appendChild(tdValor);
+        tr.appendChild(tdAcao);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function atualizarUICompleta() {
+      atualizarResumoUI();
+      atualizarRateioUI();
+      atualizarLancamentosUI();
+    }
+
+    function removerLancamento(id) {
+      if (!confirm("Remover este lançamento?")) return;
+      lancamentos = lancamentos.filter((l) => l.id !== id);
+      salvarDados();
+      atualizarUICompleta();
+    }
+
+    function atualizarEstadoRessarcir() {
+      const tipo = document.getElementById("tipo").value;
+      const pagoPorSelect = document.getElementById("pagoPor");
+      const ressarcirCheck = document.getElementById("ressarcir");
+
+      if (tipo === "despesa") {
+        const pagador = pagoPorSelect.value;
+        if (pagador && pagador !== "Henrique") {
+          ressarcirCheck.checked = true;
+          ressarcirCheck.disabled = true;
+        } else {
+          ressarcirCheck.disabled = false;
+          ressarcirCheck.checked = false;
+        }
+      } else {
+        ressarcirCheck.checked = false;
+        ressarcirCheck.disabled = false;
+      }
+    }
+
+    function configurarTipoToggle() {
+      const btnDespesa = document.getElementById("btn-tipo-despesa");
+      const btnDeposito = document.getElementById("btn-tipo-deposito");
+      const hiddenTipo = document.getElementById("tipo");
+
+      const campoCategoria = document.getElementById("campo-categoria");
+      const campoColaborador = document.getElementById("campo-colaborador");
+      const campoPagoPor = document.getElementById("campo-pago-por");
+      const checkRessarcir = document.getElementById("ressarcir");
+
+      function setTipo(tipo) {
+        hiddenTipo.value = tipo;
+
+        if (tipo === "despesa") {
+          btnDespesa.classList.add("active");
+          btnDeposito.classList.remove("active");
+          campoCategoria.style.display = "";
+          campoColaborador.style.display = "none";
+          campoPagoPor.style.display = "";
+          checkRessarcir.checked = false;
+          checkRessarcir.disabled = false;
+          atualizarEstadoRessarcir();
+        } else {
+          btnDespesa.classList.remove("active");
+          btnDeposito.classList.add("active");
+          campoCategoria.style.display = "none";
+          campoColaborador.style.display = "";
+          campoPagoPor.style.display = "none";
+          checkRessarcir.checked = false;
+          checkRessarcir.disabled = false;
+        }
+      }
+
+      btnDespesa.addEventListener("click", () => setTipo("despesa"));
+      btnDeposito.addEventListener("click", () => setTipo("deposito"));
+
+      setTipo("despesa");
+    }
+
+    function onSubmitForm(event) {
+      event.preventDefault();
+
+      const tipo = document.getElementById("tipo").value;
+      const data = document.getElementById("data").value || todayISO();
+      const valorInput = document.getElementById("valor");
+      const valor = parseFloat(String(valorInput.value).replace(",", "."));
+      const descricao = document.getElementById("descricao").value.trim();
+
+      const categoria = document.getElementById("categoria").value;
+      const pagoPor = document.getElementById("pagoPor").value;
+      const colaborador = document.getElementById("colaborador").value;
+      const ressarcirCheck = document.getElementById("ressarcir");
+
+      if (isNaN(valor) || valor <= 0) {
+        alert("Informe um valor válido maior que zero.");
+        valorInput.focus();
+        return;
+      }
+
+      const novo = {
+        id: Date.now(),
+        tipo,
+        data,
+        valor,
+        descricao,
+      };
+
+      if (tipo === "despesa") {
+        novo.categoria = categoria;
+        novo.pagoPor = pagoPor;
+        if (pagoPor && pagoPor !== "Henrique") {
+          novo.ressarcir = true;
+        } else {
+          novo.ressarcir = !!ressarcirCheck.checked;
+        }
+      } else if (tipo === "deposito") {
+        novo.colaborador = colaborador;
+      }
+
+      lancamentos.push(novo);
+      salvarDados();
+      atualizarUICompleta();
+
+      valorInput.value = "";
+      document.getElementById("descricao").value = "";
+    }
+
+    function gerarTextoWhatsApp() {
+      const { totalDespesas, totalDepositos, saldo, cota, depositosPorPessoa } =
+        calcularResumo();
+
+      const despesas = lancamentos.filter((l) => l.tipo === "despesa");
+      const depositos = lancamentos.filter((l) => l.tipo === "deposito");
+      const ressarcir = despesas.filter((l) => l.ressarcir);
+
+      const hoje = new Date();
+      const dataStr = hoje.toLocaleDateString("pt-BR");
+
+      let texto = "";
+      texto += "🧓 *Controle do Tio Beto*  \n";
+      texto += `Atualizado em: ${dataStr}\n\n`;
+
+      texto += "💸 *Despesas do período*\n";
+      if (despesas.length === 0) {
+        texto += "• Nenhuma despesa lançada.\n";
+      } else {
+        despesas.forEach((d) => {
+          const partes = [];
+          if (d.categoria) partes.push(d.categoria);
+          if (d.pagoPor) partes.push(`pago por ${d.pagoPor}`);
+          texto += `• ${d.data} – ${formatCurrency(d.valor)}`;
+          if (partes.length > 0) {
+            texto += ` (${partes.join(", ")})`;
+          }
+          if (d.descricao) {
+            texto += ` – ${d.descricao}`;
+          }
+          texto += "\n";
+        });
+      }
+      texto += `*Total de despesas:* ${formatCurrency(totalDespesas)}\n\n`;
+
+      texto += "🏦 *Depósitos realizados*\n";
+      if (depositos.length === 0) {
+        texto += "• Nenhum depósito lançado.\n";
+      } else {
+        colaboradores.forEach((nome) => {
+          const valor = depositosPorPessoa[nome] || 0;
+          texto += `• ${nome}: ${formatCurrency(valor)}\n`;
+        });
+      }
+      texto += `*Total de depósitos:* ${formatCurrency(totalDepositos)}\n\n`;
+
+      if (ressarcir.length > 0) {
+        texto += "🔁 *Despesas para ressarcimento*\n";
+        ressarcir.forEach((d) => {
+          texto += `• ${d.data} – ${formatCurrency(d.valor)} (pago por ${
+            d.pagoPor
+          })`;
+          if (d.descricao) texto += ` – ${d.descricao}`;
+          texto += "\n";
+        });
+        texto += "\n";
+      }
+
+      texto += "📊 *Situação geral do caixa*\n";
+      texto += `• Saldo do caixa: ${formatCurrency(saldo)}\n`;
+      texto += `• Cota estimada por pessoa (despesas ÷ colaboradores): ${formatCurrency(
+        cota
+      )}\n\n`;
+
+      texto +=
+        "Obs.: este é um resumo automático. Qualquer dúvida ou ajuste, falar com o Henrique. 🙏";
+
+      const box = document.getElementById("whatsapp-box");
+      const txtArea = document.getElementById("whatsapp-text");
+      box.style.display = "block";
+      txtArea.value = texto;
+
+      txtArea.focus();
+      txtArea.select();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("data").value = todayISO();
+
+      initSelects();
+      configurarTipoToggle();
+      carregarDados();
+      atualizarUICompleta();
+
+      const pagoPorSelect = document.getElementById("pagoPor");
+      pagoPorSelect.addEventListener("change", atualizarEstadoRessarcir);
+
+      document
+        .getElementById("form-lancamento")
+        .addEventListener("submit", onSubmitForm);
+
+      document
+        .getElementById("btn-whatsapp")
+        .addEventListener("click", gerarTextoWhatsApp);
+
+      atualizarEstadoRessarcir();
+    });
+  </script>
+</body>
+</html>
